@@ -226,14 +226,16 @@ void RMSerialDriver::sendData(const auto_aim_interfaces::msg::GimbalCmd::ConstSh
     // LOG [Send] packet.tracking
     // RCLCPP_INFO(get_logger(), "[Send] packet.tracking %d!", packet.tracking);
 
-    RCLCPP_INFO(get_logger(), "[Send] packet.pitch %f!", packet.pitch);
-    RCLCPP_INFO(get_logger(), "[Send] packet.yaw %f!", packet.yaw);
-    RCLCPP_INFO(get_logger(), "[Send] packet.shoot_cmd %d!", packet.shoot_cmd);
-    RCLCPP_INFO(get_logger(), "----------------------------");
+    // RCLCPP_INFO(get_logger(), "[Send] packet.pitch %f!", packet.pitch);
+    // RCLCPP_INFO(get_logger(), "[Send] packet.yaw %f!", packet.yaw);
+    // RCLCPP_INFO(get_logger(), "[Send] packet.shoot_cmd %d!", packet.shoot_cmd);
+    // RCLCPP_INFO(get_logger(), "----------------------------");
 
     std_msgs::msg::Float64 latency;
     latency.data = (this->now() - gimbal_msg->header.stamp).seconds() * 1000.0;
-    RCLCPP_DEBUG_STREAM(get_logger(), "Total latency: " + std::to_string(latency.data) + "ms");
+    RCLCPP_DEBUG_STREAM(
+      get_logger(), "Processed latency: " + std::to_string(gimbal_msg->latency) + "ms" + "  " +
+                      "Serial latency: " + std::to_string(latency.data) + "ms");
     latency_pub_->publish(latency);
   } catch (const std::exception & ex) {
     RCLCPP_ERROR(get_logger(), "Error while sending data: %s", ex.what());

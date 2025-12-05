@@ -117,7 +117,7 @@ void ProjectileMotionNode::targetCallback(const auto_aim_interfaces::msg::Target
   // 预测 哪一块装甲板在我子弹飞到的时候 最近/最好打 算出应该打它时的 pitch/yaw
   calculateTargetPosition(msg, center_position, center_velocity, cur_yaw_, hit_yaw, hit_pitch);
   // 把算好的角度发出去
-  publishGimbalCommand(hit_pitch, hit_yaw, 1);
+  publishGimbalCommand(hit_pitch, hit_yaw, 1, msg->header.stamp);
 }
 
 // 获取当前云台角度
@@ -235,11 +235,13 @@ void ProjectileMotionNode::calculateTargetPosition(
 
 // 云台和射击指令发布函数
 // 先发你要去的位置，再发开枪指令
-void ProjectileMotionNode::publishGimbalCommand(double hit_pitch, double hit_yaw, uint8_t shoot)
+void ProjectileMotionNode::publishGimbalCommand(
+  double hit_pitch, double hit_yaw, uint8_t shoot, rclcpp::Time stamp)
 {
   auto_aim_interfaces::msg::GimbalCmd gimbal_cmd;
   example_interfaces::msg::UInt8 shoot_cmd;
   gimbal_cmd.header.stamp = this->now();
+  gimbal_cmd.latency = (this->now() - stamp).seconds() * 1000.0;
   gimbal_cmd.pitch_type = auto_aim_interfaces::msg::GimbalCmd::ABSOLUTE_ANGLE;
   gimbal_cmd.yaw_type = auto_aim_interfaces::msg::GimbalCmd::ABSOLUTE_ANGLE;
   gimbal_cmd.position.pitch = hit_pitch + offset_pitch_;

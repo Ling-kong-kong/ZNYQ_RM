@@ -14,3 +14,6 @@ Gimbal velocity
 
 # control shoot
 uint8 shoot_cmd
+
+# latency
+float64 latency
