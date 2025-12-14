@@ -1,1 +1,10 @@
-ZNYQ_vision\.vscode\settings.json
+.\.vscode\*
+.\.vscode
+
+.\yolo_detect_ws\GEMINI.md
+.\yolo_detect_ws\IFLOW.md
+.\yolo_detect_ws\.vsceod
+
+.\ZNYQ_vision\GEMINI.md
+.\ZNYQ_vision\IFLOW.md
+.\ZNYQ_vision\.vsceod
