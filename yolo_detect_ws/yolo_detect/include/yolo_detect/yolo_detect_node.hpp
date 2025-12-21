@@ -14,9 +14,21 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
+#include "sensor_msgs/msg/camera_info.hpp"
+#include "std_msgs/msg/string.hpp"
+#include "std_msgs/msg/header.hpp"
+#include "geometry_msgs/msg/pose.hpp"
+#include "geometry_msgs/msg/pose_array.hpp"
+#include "geometry_msgs/msg/point.hpp"
+#include "visualization_msgs/msg/marker.hpp"
+#include "visualization_msgs/msg/marker_array.hpp"
+// 包含生成的消息头文件
+#include "yolo_detect/msg/armor.hpp"
+#include "yolo_detect/msg/armors.hpp"
 #include "cv_bridge/cv_bridge.h"
 #include "yolo_detect/ros2_armor.hpp"
 #include "yolo_detect/yolov5.hpp"
+#include "yolo_detect/pnp_solver.hpp"
 #include "rcl_interfaces/msg/set_parameters_result.hpp"
 
 namespace yolo_detect
@@ -36,10 +48,40 @@ namespace yolo_detect
     YoloDetect();
 
   private:
-    // ROS2 相关成员
+  private:
+    // 图像订阅器
     rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_sub_;
+
+    // 结果图像发布器
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr result_img_pub_;
+
+    // yolo检测初始化器
     std::unique_ptr<yolo_detect::YOLOV5> detector_;
+
+    // PnP求解
+    std::unique_ptr<rm_auto_aim::PnPSolver> pnp_solver_;
+
+    // 相机信息及订阅发布器
+    cv::Point2f cam_center_;
+    sensor_msgs::msg::CameraInfo::SharedPtr cam_info_;
+    rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr cam_info_sub_;
+
+    // 任务状态及任务订阅器
+    bool is_aim_task_;
+    rclcpp::Subscription<std_msgs::msg::String>::SharedPtr task_sub_;
+
+    // 可视化标记及可视化标记发布器
+    visualization_msgs::msg::Marker armor_marker_;
+    visualization_msgs::msg::Marker text_marker_;
+    visualization_msgs::msg::MarkerArray marker_array_;
+    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
+
+    // 装甲板信息发布器
+    yolo_detect::msg::Armors armors_msg_;
+    rclcpp::Publisher<yolo_detect::msg::Armors>::SharedPtr armors_pub_;
+
+    // rm_auto_aim::Armor格式
+    std::list<rm_auto_aim::Armor> rm_armors;
 
     // 配置参数
     std::string config_path_;
@@ -48,21 +90,25 @@ namespace yolo_detect
     int frame_count_;
 
     // 帧率计算相关变量
-    std::chrono::high_resolution_clock::time_point last_fps_time_;
+    std::chrono::high_resolution_clock::time_point last_frame_time_;
     double current_fps_ = 0.0;
-    std::vector<double> fps_history_;        // FPS历史记录，用于平滑显示
-    const size_t max_fps_history_size_ = 10; // 保存最近10帧的FPS
 
     // ROI参数
     bool use_roi_;
     cv::Rect roi_;
-    
+
     // 图像尺寸
     int image_width_;
     int image_height_;
-    
+
     // 参数回调句柄
     rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr parameter_callback_handle_;
+
+    /**
+     * @brief 任务回调函数
+     * @param task_msg 任务消息
+     */
+    void task_callback(const std_msgs::msg::String::SharedPtr task_msg);
 
     /**
      * @brief 图像回调函数
@@ -124,7 +170,12 @@ namespace yolo_detect
      * @param source_armor 源yolo_detect::Armor对象
      * @return 转换后的rm_auto_aim::Armor结构
      */
-    rm_auto_aim::Armor convert_to_rm_armor(const yolo_detect::Armor& source_armor);
+    rm_auto_aim::Armor convert_to_rm_armor(const yolo_detect::Armor &source_armor);
+
+    /**
+     * @brief 发布标记函数
+     */
+    void publishMarkers();
   };
 
 } // namespace yolo_detect

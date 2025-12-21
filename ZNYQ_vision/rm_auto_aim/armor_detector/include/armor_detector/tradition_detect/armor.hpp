@@ -11,7 +11,9 @@
 #include <algorithm>
 #include <string>
 
-namespace rm_auto_aim
+namespace armor_detector
+{
+namespace tradition_detect
 {
 const int RED = 0;
 const int BLUE = 1;
@@ -63,6 +65,18 @@ struct Armor
   std::string classfication_result;
 };
 
+}  // namespace tradition_detect
+}  // namespace armor_detector
+
+// 为了保持向后兼容性，在rm_auto_aim命名空间中创建类型别名
+namespace rm_auto_aim
+{
+using Armor = armor_detector::tradition_detect::Armor;
+using ArmorType = armor_detector::tradition_detect::ArmorType;
+using Light = armor_detector::tradition_detect::Light;
+constexpr auto ARMOR_TYPE_STR = armor_detector::tradition_detect::ARMOR_TYPE_STR;
+constexpr auto RED = armor_detector::tradition_detect::RED;
+constexpr auto BLUE = armor_detector::tradition_detect::BLUE;
 }  // namespace rm_auto_aim
 
 #endif  // ARMOR_DETECTOR__ARMOR_HPP_

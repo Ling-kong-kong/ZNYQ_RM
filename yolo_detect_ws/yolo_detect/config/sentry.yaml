@@ -17,8 +17,11 @@ device: "CPU"
 # 检测置信度阈值
 min_confidence: 0.8
 
-# 是否使用传统方法进行二次矫正 并为实装 暂时关闭
-use_traditional: false
+# 是否使用传统方法进行二次矫正
+# use_traditional: true
+
+# 二值化阈值
+# threshold: 150
 
 #####-----ROI区域设置-----#####
 # 感兴趣区域设置，可提高检测效率
@@ -31,31 +34,7 @@ roi:
 # 是否启用ROI检测
 use_roi: true
 
-#####-----传统检测参数-----#####
-# 二值化阈值
-threshold: 150
-
-# 灯条角度误差最大值（度）
-max_angle_error: 45
-
-# 灯条长宽比范围
-min_lightbar_ratio: 1.5
-max_lightbar_ratio: 20
-
-# 灯条最小长度
-min_lightbar_length: 8
-
-# 装甲板长宽比范围
-min_armor_ratio: 1
-max_armor_ratio: 5
-
-# 左右灯条长度比最大值
-max_side_ratio: 1.5
-
-# 矩形误差最大值（度）
-max_rectangular_error: 25
-
 #####-----图像参数-----#####
 # 图像尺寸
-image_width: 1440
-image_height: 1080
+image_width: 1280
+image_height: 720

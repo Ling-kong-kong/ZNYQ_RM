@@ -14,11 +14,13 @@
 #include <cmath>
 #include <vector>
 
-#include "armor_detector/detector.hpp"
+#include "armor_detector/tradition_detect/detector.hpp"
 #include "auto_aim_interfaces/msg/debug_armor.hpp"
 #include "auto_aim_interfaces/msg/debug_light.hpp"
 
-namespace rm_auto_aim
+namespace armor_detector
+{
+namespace tradition_detect
 {
 Detector::Detector(
   const int & bin_thres, const int & color, const LightParams & l, const ArmorParams & a)
@@ -273,4 +275,5 @@ void Detector::drawResults(cv::Mat & img)
   }
 }
 
-}  // namespace rm_auto_aim
+}  // namespace tradition_detect
+}  // namespace armor_detector

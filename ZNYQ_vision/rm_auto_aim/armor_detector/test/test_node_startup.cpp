@@ -9,7 +9,7 @@
 // STD
 #include <memory>
 
-#include "armor_detector/detector_node.hpp"
+#include "armor_detector/tradition_detect/detector_node.hpp"
 
 TEST(ArmorDetectorNodeTest, NodeStartupTest)
 {

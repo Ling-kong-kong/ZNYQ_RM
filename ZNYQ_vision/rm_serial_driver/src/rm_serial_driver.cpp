@@ -124,7 +124,6 @@ void RMSerialDriver::receiveData()
           // RCLCPP_INFO(get_logger(), "[Receive] roll %f!", packet.roll);
           // RCLCPP_INFO(get_logger(), "[Receive] pitch %f!", packet.pitch);
           // RCLCPP_INFO(get_logger(), "[Receive] yaw %f!", packet.yaw);
-
           // RCLCPP_INFO(get_logger(), "----------------------------");
 
           // if (!initial_set_param_ || packet.detect_color != previous_receive_color_) {

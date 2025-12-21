@@ -31,7 +31,7 @@ def generate_launch_description():
                 camera_node,
                 ComposableNode(
                     package='armor_detector',
-                    plugin='rm_auto_aim::ArmorDetectorNode',
+                    plugin='armor_detector::tradition_detect::ArmorDetectorNode',
                     name='armor_detector',
                     parameters=[node_params],
                     extra_arguments=[{'use_intra_process_comms': True}]
@@ -51,6 +51,18 @@ def generate_launch_description():
         cam_detector = get_camera_detector_container(hik_camera_node)
     elif (launch_params['camera'] == 'mv'):
         cam_detector = get_camera_detector_container(mv_camera_node)
+
+    # 弹道解算节点
+    projectile_motion_node = Node(
+        package='projectile_motion',
+        executable='projectile_motion_node',
+        name='projectile_motion',
+        output='both',
+        emulate_tty=True,
+        parameters=[node_params],
+        on_exit=Shutdown(),
+        ros_arguments=['--ros-args', '--log-level', 'projectile_motion:=INFO'],
+    )
 
     serial_driver_node = Node(
         package='rm_serial_driver',
@@ -74,9 +86,15 @@ def generate_launch_description():
         actions=[tracker_node],
     )
 
+    delay_projectile_node = TimerAction(
+        period=2.5,
+        actions=[projectile_motion_node],
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         cam_detector,
         delay_serial_node,
         delay_tracker_node,
+        delay_projectile_node,
     ])

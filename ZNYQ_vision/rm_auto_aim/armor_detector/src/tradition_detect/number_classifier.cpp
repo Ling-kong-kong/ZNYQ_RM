@@ -20,10 +20,12 @@
 #include <string>
 #include <vector>
 
-#include "armor_detector/armor.hpp"
-#include "armor_detector/number_classifier.hpp"
+#include "armor_detector/tradition_detect/armor.hpp"
+#include "armor_detector/tradition_detect/number_classifier.hpp"
 
-namespace rm_auto_aim
+namespace armor_detector
+{
+namespace tradition_detect
 {
 NumberClassifier::NumberClassifier(
   const std::string & model_path, const std::string & label_path, const double thre,
@@ -145,4 +147,5 @@ void NumberClassifier::classify(std::vector<Armor> & armors)
     armors.end());
 }
 
-}  // namespace rm_auto_aim
+}  // namespace tradition_detect
+}  // namespace armor_detector

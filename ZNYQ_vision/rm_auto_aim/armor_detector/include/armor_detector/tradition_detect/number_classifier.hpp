@@ -15,9 +15,11 @@
 #include <string>
 #include <vector>
 
-#include "armor_detector/armor.hpp"
+#include "armor_detector/tradition_detect/armor.hpp"
 
-namespace rm_auto_aim
+namespace armor_detector
+{
+namespace tradition_detect
 {
 class NumberClassifier
 {
@@ -37,6 +39,13 @@ private:
   std::vector<std::string> class_names_;
   std::vector<std::string> ignore_classes_;
 };
+}  // namespace tradition_detect
+}  // namespace armor_detector
+
+// 为了保持向后兼容性，在rm_auto_aim命名空间中创建类型别名
+namespace rm_auto_aim
+{
+using NumberClassifier = armor_detector::tradition_detect::NumberClassifier;
 }  // namespace rm_auto_aim
 
 #endif  // ARMOR_DETECTOR__NUMBER_CLASSIFIER_HPP_

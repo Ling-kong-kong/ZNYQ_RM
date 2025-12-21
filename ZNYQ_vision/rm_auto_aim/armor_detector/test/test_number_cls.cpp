@@ -12,7 +12,7 @@
 #include <map>
 #include <vector>
 
-#include "armor_detector/number_classifier.hpp"
+#include "armor_detector/tradition_detect/number_classifier.hpp"
 
 using hrc = std::chrono::high_resolution_clock;
 

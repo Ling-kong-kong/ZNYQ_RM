@@ -17,7 +17,7 @@
   ros__parameters:
     debug: true
 
-    detect_color: 0
+    detect_color: 0  # 0 蓝 1 红
     binary_thres: 80
 
     light.min_ratio: 0.1
@@ -45,3 +45,18 @@
 
       tracking_thres: 5
       lost_time_thres: 1.0
+
+/projectile_motion:
+  ros__parameters:
+    use_sim_time: false
+    projectile:
+      offset_pitch: 0.0 # 俯仰角的补偿
+      offset_yaw: 0.0 # 航向角的补偿
+      offset_time: 0.0 # 额外的飞行时间补偿
+      initial_speed: 18.0 # 子弹初速度
+      target_frame: "gimbal_link" # 目标坐标系
+      target_topic: "tracker/target" # 目标话题
+      gimbal_cmd_topic: "cmd_gimbal_joint" # 云台控制话题
+      shoot_cmd_topic: "cmd_shoot" # 射击控制话题
+      solver_type: "gravity" # 弹道模型（只重力/含阻力）: gravity / gaf
+      # friction: 0.001                         # Air resistance factor if use GAF solver

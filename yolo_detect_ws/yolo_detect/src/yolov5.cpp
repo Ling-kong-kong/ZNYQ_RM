@@ -36,22 +36,25 @@ namespace yolo_detect
     auto yaml = YAML::LoadFile(config_path);
 
     std::cout << "Loading config from: " << config_path << std::endl;
-    
+
     // 安全地加载参数，添加错误处理
-    try {
+    try
+    {
       model_path_ = yaml["yolov5_model_path"].as<std::string>();
       device_ = yaml["device"].as<std::string>();
-      binary_threshold_ = yaml["threshold"].as<double>();
+      // binary_threshold_ = yaml["threshold"].as<double>();
       min_confidence_ = yaml["min_confidence"].as<double>();
-      use_traditional_ = yaml["use_traditional"].as<bool>();
-      
+      // use_traditional_ = yaml["use_traditional"].as<bool>();
+
       std::cout << "Config loaded successfully:" << std::endl;
       std::cout << "  model_path: " << model_path_ << std::endl;
       std::cout << "  device: " << device_ << std::endl;
-      std::cout << "  threshold: " << binary_threshold_ << std::endl;
+      // std::cout << "  threshold: " << binary_threshold_ << std::endl;
       std::cout << "  min_confidence: " << min_confidence_ << std::endl;
-      std::cout << "  use_traditional: " << use_traditional_ << std::endl;
-    } catch (const std::exception &e) {
+      // std::cout << "  use_traditional: " << use_traditional_ << std::endl;
+    }
+    catch (const std::exception &e)
+    {
       std::cerr << "Error loading config: " << e.what() << std::endl;
       throw;
     }
@@ -97,7 +100,8 @@ namespace yolo_detect
 
     // 调试输出
     std::cout << "Loading model from: " << model_path_ << std::endl;
-    if (!std::filesystem::exists(model_path_)) {
+    if (!std::filesystem::exists(model_path_))
+    {
       std::cerr << "Model file does not exist: " << model_path_ << std::endl;
       throw std::runtime_error("Model file not found: " + model_path_);
     }
@@ -481,10 +485,11 @@ namespace yolo_detect
     roi_ = roi;
     use_roi_ = use_roi;
     offset_ = cv::Point2f(roi_.x, roi_.y);
-    
-    if (debug_) {
-      std::cout << "ROI updated to: (" << roi_.x << ", " << roi_.y << ", " 
-                << roi_.width << ", " << roi_.height << "), use_roi: " 
+
+    if (debug_)
+    {
+      std::cout << "ROI updated to: (" << roi_.x << ", " << roi_.y << ", "
+                << roi_.width << ", " << roi_.height << "), use_roi: "
                 << (use_roi_ ? "true" : "false") << std::endl;
     }
   }
