@@ -12,18 +12,18 @@
 
 ```
 ZNYQ_vision/
-├── rm_auto_aim/           # 自动瞄准模块
-│   ├── armor_detector/    # 装甲板检测
-│   ├── armor_tracker/     # 装甲板跟踪
+├── rm_auto_aim/             # 自动瞄准模块
+│   ├── armor_detector/      # 装甲板检测
+│   ├── armor_tracker/       # 装甲板跟踪
 │   ├── auto_aim_interfaces/ # 接口定义
-│   └── projectile_motion/ # 弹道解算
-├── rm_vision/            # 视觉系统集成
-│   └── rm_vision_bringup/ # 启动配置
-├── rm_serial_driver/     # 串口驱动
-├── rm_gimbal_description/ # 云台描述文件
-├── rmoss_core/          # RoboMaster OSS 核心模块
-├── rmoss_interfaces/    # 通用接口定义
-└── ros2_hik_camera/     # 海康相机驱动
+│   └── projectile_motion/   # 弹道解算
+├── rm_vision/               # 视觉系统集成
+│   └── rm_vision_bringup/   # 启动配置
+├── rm_serial_driver/        # 串口驱动
+├── rm_gimbal_description/   # 云台描述文件
+├── rmoss_core/              # RoboMaster OSS 核心模块
+├── rmoss_interfaces/        # 通用接口定义
+└── ros2_hik_camera/         # 海康相机驱动
 ```
 
 ## 核心模块详解
@@ -34,17 +34,19 @@ ZNYQ_vision/
 
 **核心算法流程**：
 
+传统视觉：
+
 1. **图像预处理**：RGB转灰度图，二值化处理
 2. **灯条识别**：轮廓检测，几何筛选，颜色判断
 3. **灯条匹配**：将符合条件的灯条配对组合成装甲板
 4. **数字识别**：使用ONNX模型识别装甲板上的数字
 5. **PnP解算**：计算装甲板在相机坐标系下的三维位姿
 
-**关键参数**：
+神经网络：
 
-- `detect_color`: 检测颜色（0=红色，1=蓝色）
-- `binary_thres`: 二值化阈值
-- `classifier_threshold`: 数字分类置信度阈值
+1. **图像预处理**：ROI分割，加快处理时间
+2. **装甲板识别**：YOLO神经网络识别
+3. **PnP解算**：计算装甲板在相机坐标系下的三维位姿
 
 ### 2. armor_tracker (装甲板跟踪模块)
 
@@ -57,13 +59,6 @@ ZNYQ_vision/
 - 多目标跟踪和切换
 - 目标丢失和重捕获处理
 
-**关键参数**：
-
-- `max_match_distance`: 最大匹配距离
-- `max_match_yaw_diff`: 最大偏航角差异
-- `tracking_thres`: 跟踪阈值
-- `lost_time_thres`: 目标丢失时间阈值
-
 ### 3. projectile_motion (弹道解算模块)
 
 **功能**：根据目标位置计算云台控制角度
@@ -72,13 +67,6 @@ ZNYQ_vision/
 
 - **GravityProjectileSolver**：仅考虑重力的抛物线模型
 - **GafProjectileSolver**：考虑重力和空气阻力的模型
-
-**关键参数**：
-
-- `initial_speed`: 子弹初速度
-- `offset_pitch`: 俯仰角补偿
-- `offset_yaw`: 偏航角补偿
-- `offset_time`: 飞行时间补偿
 
 ### 4. 串口通信模块
 
@@ -226,8 +214,7 @@ ros2 launch rm_vision_bringup no_hardware.launch.py
 ### 常见问题
 
 1. **相机无法打开**
-   - 检查设备权限：`sudo chmod 666 /dev/video*`
-   - 确认相机驱动是否正确安装
+   - 确认相机驱动sdk是否正确安装
 
 2. **OpenVINO相关错误**
    - 检查OpenVINO安装路径：`/opt/intel/openvino_2024.6.0/runtime`
@@ -262,38 +249,3 @@ ros2 launch rm_vision_bringup no_hardware.launch.py
 
    - 使用Foxglove Studio进行ROS2数据可视化
    - 查看调试话题：`/debug_armors`, `/debug_lights`
-
-## 开发指南
-
-### 代码规范
-
-- 遵循ROS2代码风格指南
-- 使用C++14标准
-- 函数和变量使用驼峰命名法
-- 类名使用帕斯卡命名法
-
-### 添加新功能
-
-1. 在相应模块下创建新的源文件
-2. 更新CMakeLists.txt添加编译目标
-3. 更新package.xml添加依赖
-4. 编写单元测试
-5. 更新文档
-
-### 测试
-
-```bash
-# 运行所有测试
-colcon test --packages-up-to rm_auto_aim
-
-# 查看测试结果
-colcon test-result --verbose
-```
-
-## 贡献指南
-
-1. Fork本项目
-2. 创建功能分支：`git checkout -b feature/new-feature`
-3. 提交更改：`git commit -am 'Add new feature'`
-4. 推送分支：`git push origin feature/new-feature`
-5. 提交Pull Request
